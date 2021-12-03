@@ -247,7 +247,7 @@ L1PFCompare::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    
    edm::Handle<edm::View<l1t::PFJet>> l1jets;
    edm::Handle<edm::ValueMap<float> > l1ValueMap_;
-   bool doL1jets = true;
+   bool doL1Jets = true;
 
    if(iEvent.getByToken(l1jetToken_, l1jets)) {}
    else doL1Jets = false;
@@ -450,7 +450,7 @@ L1PFCompare::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                il1++;
                continue;
            }
-           tmp.SetPtEtaPhiM(srcjet.pt(), srcjet.eta(), srcjet.phi(), srcjet.mass());
+           tmp.SetPtEtaPhiE(srcjet.pt(), srcjet.eta(), srcjet.phi(), srcjet.energy());
            dummy.first = tmp;
            dummy.second = int(((*l1ValueMap_)[l1jets->refAt(il1)])*1000.);
            l1jetTmp.push_back(dummy);

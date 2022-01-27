@@ -4,7 +4,7 @@ Basic Instructions
 cmsrel CMSSW_11_1_7
 cd CMSSW_11_1_7/src
 cmsenv
-git cms-checkout-topic -u p2l1pfp:L1PF_11_1_7_X_newfirmware
+git cms-checkout-topic -u drankincms:btagging_CMSSW_11_1_7
 git cms-addpkg  L1Trigger/TrackTrigger
 git cms-addpkg SimTracker/TrackTriggerAssociation
 git cms-addpkg L1Trigger/L1TMuon

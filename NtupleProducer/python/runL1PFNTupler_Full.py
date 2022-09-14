@@ -57,9 +57,9 @@ process.ntuple0 = cms.EDAnalyzer("L1PFCompare",
     minPt = cms.double(2.),
     maxEta = cms.double(3.),
     maxN = cms.uint32(9999),
-    genIDs = cms.vint32(5,-5,-4,4),
+    genIDs = cms.vint32(1000006,-1000006,5,-5,-4,4),
     addGenIDs = cms.vint32(),
-    genStatuses = cms.vint32(23,23,23,23),
+    genStatuses = cms.vint32(22,22,23,23,23,23),
 )
 process.p += process.ntuple0
 

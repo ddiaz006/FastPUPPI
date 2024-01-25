@@ -391,9 +391,11 @@ L1PFCompare::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    }
 
    std::vector<std::tuple<TLorentzVector,int,int>> genFull;
-   std::vector<edm::Ptr<reco::GenParticle>> lTauMothers;
+   std::vector<edm::Ptr<reco::GenParticle>> lTaugParticleProdVertexYMothers;
    for (size_t i = 0; i < genParticles->size(); i++){
+       if (genFull.size()>=maxN_) break;
        const reco::GenParticle & p = (*genParticles).at(i);
+       //if ( !(abs(p.pdgId())==5) || !(abs(p.pdgId())==4) || !(abs(p.pdgId())==3) || !(abs(p.pdgId())==2) || !(abs(p.pdgId())==1)) continue;
        if (p.pt()<minPt_ or fabs(p.eta())>maxEta_) continue;
        bool badID = true;
        for (unsigned int d = 0; d < genIDs_.size(); d++) {
@@ -407,28 +409,12 @@ L1PFCompare::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        int iter = 0;
        searchDaughters(p, flagged, iter);
        if (flagged) continue;
+       if( !p.isHardProcess()) continue;
        int tauIndex = -1;
-       if( (p.vx()*p.vx() + p.vy()*p.vy()) > 1. or p.vz() > 30.) continue;
+       //if( (p.vx()*p.vx() + p.vy()*p.vy()) > 1. or p.vz() > 30.) continue;
        tmp.SetPtEtaPhiE(p.pt(),p.eta(),p.phi(),p.energy());
        bool already = false;
        for (unsigned int j = 0; j < genFull.size(); j++) {if (tmp.DeltaR(std::get<0>(genFull[j]))<0.3 && fabs((tmp.Pt()/std::get<0>(genFull[j]).Pt())-1.)<0.1 && std::get<1>(genFull[j])==p.pdgId()) {already = true; break;}}
-       if (already) continue;
-       std::get<0>(dumtup) = tmp;
-       std::get<1>(dumtup) = p.pdgId();
-       std::get<2>(dumtup) = tauIndex;
-       genFull.push_back(dumtup);
-   }
-   for (size_t i = 0; i < genParticles->size(); i++){
-       if (genFull.size()>=maxN_) break;
-       const reco::GenParticle & p = (*genParticles).at(i);
-       if (p.pt()<minPt_ or fabs(p.eta())>maxEta_) continue;
-       if ( !(abs(p.pdgId())==5) ) continue;
-       if( !p.isHardProcess()) continue;
-       int tauIndex = -1;
-       if( (p.vx()*p.vx() + p.vy()*p.vy()) > 1. or p.vz() > 30.) continue;
-       tmp.SetPtEtaPhiE(p.pt(),p.eta(),p.phi(),p.energy());
-       bool already = false;
-       for (unsigned int j = 0; j < genFull.size(); j++) {if (tmp.DeltaR(std::get<0>(genFull[j]))<0.05 && fabs((tmp.Pt()/std::get<0>(genFull[j]).Pt())-1.)<0.1 && std::get<1>(genFull[j])==p.pdgId()) {already = true; break;}}
        if (already) continue;
        std::get<0>(dumtup) = tmp;
        std::get<1>(dumtup) = p.pdgId();

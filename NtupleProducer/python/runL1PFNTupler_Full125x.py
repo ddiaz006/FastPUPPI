@@ -1,5 +1,15 @@
 import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
+import FWCore.ParameterSet.VarParsing as VarParsing
+
+# setup 'analysis'  options
+options = VarParsing.VarParsing ('analysis')
+# setup any defaults you want
+options.maxEvents = -1 # -1 means all events
+options.outputFile = 'file:pfTuple.root'
+
+# get and parse the command line arguments
+options.parseArguments()
 
 process = cms.Process("IN", eras.Phase2C17I13M9)
 process.load('Configuration.StandardSequences.Services_cff')
@@ -24,10 +34,10 @@ process.load("RecoVertex.BeamSpotProducer.BeamSpot_cfi")
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
          #'root://cms-xrd-global.cern.ch//store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/003ACFBC-23B2-EA45-9A12-BECFF07760FC.root',
-         'file:/afs/cern.ch/work/d/ddiaz/L1SampleGen/L1_sampleGen/12_5_x/GEN-SIMDIGIRAW.root',
+         'file:/afs/cern.ch/work/d/ddiaz/L1SampleGen/cleanBuild/L1_sampleGen/12_5_x/GENSIMDIGIRAW.root',
     )
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10))
 process.options = cms.untracked.PSet( 
         wantSummary = cms.untracked.bool(True),
         #numberOfThreads = cms.untracked.uint32(4),
@@ -55,31 +65,28 @@ process.p = cms.Path(
     process.SimL1Emulator
 )
 process.p.associate(process.PFInputsTask)
-# next two lines not needed anynmore
-# updated code does this, just take the proper collections
-# for example l1tLayer1 --> l1tLayer1Extended
-##process.l1tTTTracksFromTrackletEmulation.Hnpar = 5
-##process.l1tPFTracksFromL1Tracks.nParam = 5
-
-###process.L1TkPrimaryVertex.nVtx = cms.int32(5)
-###process.Vertex.nVtx = cms.int32(5)
 
 process.ntuple0 = cms.EDAnalyzer("L1PFCompare",
+    #ecalTPEB = cms.InputTag("simEcalEBTriggerPrimitiveDigis"),
+    #hcalTP = cms.InputTag("simHcalTriggerPrimitiveDigis"),
+    #emcalo = cms.InputTag("l1tHGCalBackEndLayer2Producer","HGCalBackendLayer2Processor3DClustering"),
+    #egcalo = cms.InputTag(""),#l1tEGammaClusterEmuProducer"),
+    #calo = cms.InputTag(""),#l1tPFClustersFromCombinedCaloHCal","calibrated"),
     emcalo = cms.InputTag(""),
     egcalo = cms.InputTag(""),
     calo = cms.InputTag(""),
     pf = cms.InputTag("l1tLayer1:PF"),
     pup = cms.InputTag("l1tLayer1:Puppi"),
-    vtx = cms.InputTag("l1tVertexProducer", "l1vertices"),
+    vtx = cms.InputTag("l1tVertexProducer", "L1Vertices"), #"l1vertices"),
     generator = cms.InputTag('genParticles'),
     l1jet = cms.InputTag(""),
     l1bName = cms.InputTag(""),
     recojet = cms.InputTag(""),
     recobName = cms.string(""),
-    minPt = cms.double(2.),
+    minPt = cms.double(0.), #2.),
     maxEta = cms.double(3.),
     maxN = cms.uint32(9999),
-    genIDs = cms.vint32(1000006,-1000006,5,-5,-4,4),
+    genIDs = cms.vint32(35,25,5,-5,-4,4),
     addGenIDs = cms.vint32(),
     genStatuses = cms.vint32(22,22,23,23,23,23),
 )
@@ -87,4 +94,5 @@ process.p += process.ntuple0
 
 process.schedule = cms.Schedule([process.p])
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("pfTuple.root"))
+#process.TFileService = cms.Service("TFileService", fileName = cms.string("pfTuple.root"))
+process.TFileService = cms.Service("TFileService", fileName = cms.string('file:'+options.outputFile)) #cms.string("pfTuple.root"))

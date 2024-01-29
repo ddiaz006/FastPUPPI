@@ -34,10 +34,11 @@ process.load("RecoVertex.BeamSpotProducer.BeamSpot_cfi")
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
          #'root://cms-xrd-global.cern.ch//store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/003ACFBC-23B2-EA45-9A12-BECFF07760FC.root',
-         'file:/afs/cern.ch/work/d/ddiaz/L1SampleGen/cleanBuild/L1_sampleGen/12_5_x/GENSIMDIGIRAW.root',
+         #'file:/afs/cern.ch/work/d/ddiaz/L1SampleGen/cleanBuild/L1_sampleGen/12_5_x/GENSIMDIGIRAW.root',
+         'file:GENSIMDIGIRAW.root',
     )
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 process.options = cms.untracked.PSet( 
         wantSummary = cms.untracked.bool(True),
         #numberOfThreads = cms.untracked.uint32(4),
